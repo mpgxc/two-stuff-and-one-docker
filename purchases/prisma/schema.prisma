@@ -10,6 +10,8 @@ datasource db {
 model Customer {
   id String @id @default(uuid())
 
+  auth_user_id String? @unique
+
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
@@ -40,6 +42,8 @@ enum PurchaseStatus {
 
 model Purchase {
 
+  id String @id @default(uuid())
+
   status PurchaseStatus @default(PENDING)
 
   customer    Customer @relation(fields: [customer_id], references: [id])
@@ -51,6 +55,6 @@ model Purchase {
   assigned_at DateTime @default(now())
   assigned_by String
 
-  @@id([customer_id, product_id])
+  // @@id([customer_id, product_id]) Isso deve ser utilizado quando o id é composto
   @@map("purchases")
 }
