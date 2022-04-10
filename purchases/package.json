@@ -29,7 +29,8 @@
     "jwks-rsa": "^2.0.5",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "slugify": "^1.6.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -40,6 +41,7 @@
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import-helpers": "^1.2.1",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.3.2",
     "prisma": "^3.12.0",
