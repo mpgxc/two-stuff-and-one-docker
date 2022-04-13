@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { ConflictException, UseGuards } from '@nestjs/common';
 import {
   Args,
   Mutation,
@@ -48,6 +48,16 @@ export class PurchaseResolver {
       customer = await this.customersService.create({
         auth_user_id: user.sub,
       });
+    }
+
+    const purchaseAlreadyExists =
+      await this.purchasesService.findByCourseAndStudentId({
+        customer_id: customer.id,
+        product_id,
+      });
+
+    if (purchaseAlreadyExists) {
+      throw new ConflictException('Purchase already exists');
     }
 
     return this.purchasesService.create({
