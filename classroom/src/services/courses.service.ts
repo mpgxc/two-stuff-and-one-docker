@@ -10,6 +10,7 @@ import slugify from 'slugify';
 
 type CreateCourseProps = {
   title: string;
+  slug?: string;
 };
 @Injectable()
 export class CoursesService {
@@ -19,6 +20,14 @@ export class CoursesService {
     return this.prisma.course.findMany({
       orderBy: {
         created_at: 'desc',
+      },
+    });
+  }
+
+  async findBySlug(slug: string): Promise<Course | null> {
+    return this.prisma.course.findUnique({
+      where: {
+        slug,
       },
     });
   }
@@ -37,9 +46,12 @@ export class CoursesService {
     return course;
   }
 
-  async create({ title }: CreateCourseProps): Promise<Course | null> {
-    const slug = slugify(title, { lower: true });
-
+  async create({
+    title,
+    slug = slugify(title, {
+      lower: true,
+    }),
+  }: CreateCourseProps): Promise<Course | null> {
     const courseExists = await this.prisma.course.findUnique({
       where: {
         slug,

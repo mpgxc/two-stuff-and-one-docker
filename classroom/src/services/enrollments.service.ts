@@ -8,9 +8,29 @@ type FindByCourseAndStudentIdProps = {
   student_id: string;
 };
 
+type CreateEnrollmentProps = {
+  course_id: string;
+  student_id: string;
+  assigned_by: string;
+};
+
 @Injectable()
 export class EnrollmentsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async create({
+    course_id,
+    student_id,
+    assigned_by,
+  }: CreateEnrollmentProps): Promise<Enrollment> {
+    return this.prisma.enrollment.create({
+      data: {
+        course_id,
+        student_id,
+        assigned_by,
+      },
+    });
+  }
 
   async findByCourseAndStudentId({
     course_id,
