@@ -42,8 +42,6 @@ enum PurchaseStatus {
 
 model Purchase {
 
-  id String @id @default(uuid())
-
   status PurchaseStatus @default(PENDING)
 
   customer    Customer @relation(fields: [customer_id], references: [id])
@@ -55,6 +53,7 @@ model Purchase {
   assigned_at DateTime @default(now())
   assigned_by String
 
-  // @@id([customer_id, product_id]) Isso deve ser utilizado quando o id é composto
+  @@id([customer_id, product_id])
+  @@unique([customer_id, product_id])
   @@map("purchases")
 }
