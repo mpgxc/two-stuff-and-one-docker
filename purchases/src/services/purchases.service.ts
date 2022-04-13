@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Purchase } from '@prisma/client';
 
 import { PrismaService } from 'infra/databases/prisma/prisma.service';
+import { KafkaService } from 'infra/messaging/kafka.service';
 
 type CreatePurchaseProps = {
   product_id: string;
@@ -9,9 +10,16 @@ type CreatePurchaseProps = {
   assigned_by: string;
 };
 
+type FindByCourseAndStudentIdProps = {
+  product_id: string;
+  customer_id: string;
+};
 @Injectable()
 export class PurchasesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly kafkaService: KafkaService,
+  ) {}
 
   async listAll(): Promise<Purchase[]> {
     return this.prisma.purchase.findMany({
@@ -19,6 +27,22 @@ export class PurchasesService {
         assigned_by: 'desc',
       },
     });
+  }
+
+  async findByCourseAndStudentId({
+    customer_id,
+    product_id,
+  }: FindByCourseAndStudentIdProps): Promise<Purchase | null> {
+    const enrollment = await this.prisma.purchase.findUnique({
+      where: {
+        customer_id_product_id: {
+          customer_id,
+          product_id,
+        },
+      },
+    });
+
+    return enrollment;
   }
 
   async listAllByAuthId(customer_id): Promise<Purchase[]> {
@@ -44,7 +68,7 @@ export class PurchasesService {
     });
 
     if (!productExists) {
-      throw new Error('Product not found');
+      throw new NotFoundException('Product not found');
     }
 
     const purchase = await this.prisma.purchase.create({
@@ -52,6 +76,18 @@ export class PurchasesService {
         assigned_by,
         customer_id,
         product_id,
+      },
+    });
+
+    this.kafkaService.emit('purchases.create-purchase', {
+      customer: {
+        auth_user_id: assigned_by,
+      },
+
+      product: {
+        id: product_id,
+        title: productExists.title,
+        slug: productExists.slug,
       },
     });
 
