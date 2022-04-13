@@ -10,6 +10,8 @@ datasource db {
 model Student {
   id String @id @default(uuid())
 
+  auth_user_id String? @unique
+
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
@@ -45,5 +47,6 @@ model Enrollment {
   assigned_by String
 
   @@id([student_id, course_id])
+  @@unique([student_id, course_id])
   @@map("enrollments")
 }
