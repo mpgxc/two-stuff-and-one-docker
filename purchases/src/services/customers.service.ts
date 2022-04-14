@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ResolveReference } from '@nestjs/graphql';
 import { Customer } from '@prisma/client';
 
 import { PrismaService } from 'infra/databases/prisma/prisma.service';
@@ -35,5 +36,10 @@ export class CustomersService {
         auth_user_id,
       },
     });
+  }
+
+  @ResolveReference()
+  async resolveReference(reference: { auth_user_id: string }) {
+    return this.findByAuthId(reference.auth_user_id);
   }
 }
