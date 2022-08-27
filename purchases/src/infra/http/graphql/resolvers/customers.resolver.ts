@@ -1,6 +1,5 @@
 import { UseGuards } from '@nestjs/common';
 import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
-import { Purchase } from '@prisma/client';
 
 import { AuthUser, CurrentUser } from 'infra/http/guards/current-user';
 import { CustomersService } from 'services/customers.service';

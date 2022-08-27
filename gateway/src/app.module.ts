@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -16,11 +17,11 @@ import { GraphQLModule } from '@nestjs/graphql';
           subgraphs: [
             {
               name: 'purchases',
-              url: 'http://localhost:5000/graphql',
+              url: process.env.PURCHASES_URL_PORT,
             },
             {
               name: 'classroom',
-              url: 'http://localhost:5005/graphql',
+              url: process.env.CLASSROOM_URL_PORT,
             },
           ],
         }),

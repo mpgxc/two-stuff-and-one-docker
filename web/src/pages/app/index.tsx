@@ -1,8 +1,4 @@
-import {
-  useUser,
-  UserProvider,
-  withPageAuthRequired,
-} from "@auth0/nextjs-auth0";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 function Home() {
   const { user } = useUser();
